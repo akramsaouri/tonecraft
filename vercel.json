@@ -1,0 +1,7 @@
+{
+    "functions": {
+        "api/rewriteEmail.js": {
+            "maxDuration": 10
+        }
+    }
+}
