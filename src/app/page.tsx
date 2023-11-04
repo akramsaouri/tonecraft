@@ -29,17 +29,13 @@ export default function Home() {
             });
 
             if (!response.ok) {
-                setIsLoading(false);
-                alert("Something went wrong.");
-                return;
+                throw new Error("Expected response to be ok.");
             }
 
             const data = response.body;
 
             if (!data) {
-                setIsLoading(false);
-                alert("Something went wrong.");
-                return;
+                throw new Error("Expected response to have a body.");
             }
 
             const reader = data.getReader();

@@ -5,6 +5,10 @@ import {
     ReconnectInterval,
 } from "eventsource-parser";
 
+export const config = {
+    runtime: "edge",
+};
+
 export default async function (req: Request): Promise<Response> {
     try {
         const { text, tone } = await req.json();
