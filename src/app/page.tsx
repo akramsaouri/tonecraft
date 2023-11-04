@@ -7,21 +7,56 @@ export default function Home() {
     const [tone, setTone] = useState("formal");
     const [revisedText, setRevisedText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const handleSubmit = async () => {
+        setIsLoading(true);
+        setError("");
+        setRevisedText("");
+        const controller = new AbortController();
+        const body = {
+            tone,
+            text,
+        };
         try {
-            setIsLoading(true);
             const response = await fetch("/api/rewriteEmail", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ text, tone }),
+                signal: controller.signal,
+                body: JSON.stringify(body),
             });
-            const data = await response.json();
-            setRevisedText(data.revisedEmail);
+
+            if (!response.ok) {
+                throw new Error("Expected response to be ok.");
+            }
+
+            const data = response.body;
+
+            if (!data) {
+                throw new Error("Expected response to have a body.");
+            }
+
+            const reader = data.getReader();
+            const decoder = new TextDecoder();
+            let done = false;
+            let content = "";
+
+            while (!done) {
+                const { value, done: doneReading } = await reader.read();
+                done = doneReading;
+                const chunkValue = decoder.decode(value);
+
+                content += chunkValue;
+
+                setRevisedText(
+                    (prevRevisedText) => prevRevisedText + chunkValue
+                );
+            }
         } catch (error) {
-            console.error("Error rewriting the email:", error);
+            console.log(error);
+            setError("An error occurred while parsing the response.");
         } finally {
             setIsLoading(false);
         }
@@ -33,7 +68,30 @@ export default function Home() {
                 ToneCraft
             </h1>
             <p className="text-gray-600">Craft your email tone effortlessly.</p>
-
+            {error && (
+                <div
+                    className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                    role="alert"
+                    style={{ paddingRight: "2.5rem" }}
+                >
+                    <strong className="font-bold">Error! </strong>
+                    <span className="block sm:inline">{error}</span>
+                    <span
+                        className="absolute top-0 bottom-0 right-0 px-4 py-3"
+                        onClick={() => setError("")}
+                    >
+                        <svg
+                            className="fill-current h-6 w-6 text-red-500"
+                            role="button"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                        >
+                            <title>Close</title>
+                            <path d="M14.348 14.849a1.02 1.02 0 001.451 0c.399-.402.399-1.052 0-1.451l-3.797-3.798 3.797-3.797a1.02 1.02 0 000-1.451 1.02 1.02 0 00-1.451 0l-3.798 3.797-3.797-3.797a1.02 1.02 0 00-1.451 0c-.399.399-.399 1.049 0 1.451l3.797 3.797-3.797 3.798a1.02 1.02 0 000 1.451 1.02 1.02 0 001.451 0l3.797-3.798 3.798 3.798z" />
+                        </svg>
+                    </span>
+                </div>
+            )}
             <div className="bg-white p-8 w-full max-w-lg rounded-xl shadow-xl space-y-5">
                 <textarea
                     className="w-full p-3 border rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-gray-400"
