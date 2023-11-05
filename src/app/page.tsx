@@ -8,6 +8,10 @@ export default function Home() {
     const [revisedText, setRevisedText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    const [copyButtonText, setCopyButtonText] = useState("Copy");
+    const [buttonStyle, setButtonStyle] = useState(
+        "bg-indigo-600 hover:bg-indigo-700"
+    );
 
     const handleSubmit = async () => {
         setIsLoading(true);
@@ -60,6 +64,27 @@ export default function Home() {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleCopyToClipboard = () => {
+        navigator.clipboard.writeText(revisedText).then(
+            () => {
+                setCopyButtonText("Copied!");
+                setButtonStyle("bg-indigo-300 hover:bg-indigo-400");
+                setTimeout(() => {
+                    setCopyButtonText("Copy");
+                    setButtonStyle("bg-indigo-600 hover:bg-indigo-700");
+                }, 2000);
+            },
+            () => {
+                setCopyButtonText("Try Again");
+                setButtonStyle("bg-red-500 hover:bg-red-600");
+                setTimeout(() => {
+                    setCopyButtonText("Copy");
+                    setButtonStyle("bg-indigo-600 hover:bg-indigo-700");
+                }, 2000);
+            }
+        );
     };
 
     return (
@@ -137,18 +162,30 @@ export default function Home() {
                     )}
                 </button>
             </div>
-
             {revisedText && (
                 <div className="mt-6 w-full max-w-lg">
                     <h2 className="text-2xl font-medium text-gray-700 mb-4 tracking-wide">
                         Revised Email:
                     </h2>
-                    <p
-                        className="bg-white p-5 rounded-xl shadow-md text-gray-800 border-t-4 border-indigo-500"
-                        dangerouslySetInnerHTML={{
-                            __html: revisedText.replace(/\n\n/g, "<br><br>"),
-                        }}
-                    />
+                    <div
+                        className="bg-white p-5 rounded-xl shadow-md text-gray-800 border-t-4 border-indigo-500 relative"
+                        style={{ paddingRight: "80px" }}
+                    >
+                        <p
+                            dangerouslySetInnerHTML={{
+                                __html: revisedText.replace(
+                                    /\n\n/g,
+                                    "<br><br>"
+                                ),
+                            }}
+                        />
+                        <button
+                            className={`absolute top-3 right-3 text-white px-3 py-1 rounded focus:outline-none ${buttonStyle}`}
+                            onClick={handleCopyToClipboard}
+                        >
+                            {copyButtonText}
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
