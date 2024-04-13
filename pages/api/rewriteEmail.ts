@@ -30,7 +30,7 @@ export const OpenAIReadableStream = async (text: string, tone: string) => {
         },
         method: "POST",
         body: JSON.stringify({
-            model: "gpt-4",
+            model: "gpt-3.5-turbo",
             messages: [user],
             temperature: 0.5,
             stream: true,
