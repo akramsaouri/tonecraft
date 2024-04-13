@@ -27,6 +27,7 @@ export const OpenAIReadableStream = async (text: string, tone: string) => {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${process.env.OPEN_API_KEY}`,
+            "OpenAI-Organization": process.env.OPEN_ORG_ID,
         },
         method: "POST",
         body: JSON.stringify({
