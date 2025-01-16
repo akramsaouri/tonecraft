@@ -1,55 +1,30 @@
 /* globals.css */
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+html,
 body {
-    background: linear-gradient(
-        to top,
-        #c3cfe2,
-        #e9eef1
-    ); /* A subtle gradient background */
-    font-family: "Lato", sans-serif; /* A versatile font which is clean yet modern */
+  overflow-x: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to top, #c3cfe2, #e9eef1);
+  font-family: "Lato", sans-serif;
 }
 
-@keyframes rotateSpinner {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+/* Add spinner animation if not already present */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .spinner {
-    width: 24px;
-    height: 24px;
-    display: inline-block;
-    position: relative;
-}
-
-.spinner::before,
-.spinner::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin-top: -10px;
-    margin-left: -10px;
-    border: 2px solid transparent;
-    border-radius: 50%;
-    animation: rotateSpinner 1s infinite;
-}
-
-.spinner::before {
-    border-top-color: #4c51bf; /* First circle color */
-    border-right-color: #4c51bf;
-    animation-direction: reverse;
-}
-
-.spinner::after {
-    border-bottom-color: #667eea; /* Second circle color */
-    border-left-color: #667eea;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 1s linear infinite;
 }

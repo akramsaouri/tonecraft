@@ -5,11 +5,11 @@ export const runtime = "edge";
 
 export default async function handler(req: Request) {
   try {
-    const { text, tone } = await req.json();
+    const { text, tone, model } = await req.json();
     const prompt = `Rewrite the following email in a ${tone} tone: ${text}`;
 
     const response = streamText({
-      model: openai("gpt-4"),
+      model: openai(model),
       messages: [{ role: "user", content: prompt }],
       temperature: 0.5,
     });
