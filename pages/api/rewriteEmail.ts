@@ -6,7 +6,7 @@ export const runtime = "edge";
 export default async function handler(req: Request) {
   try {
     const { text, tone, model } = await req.json();
-    const prompt = `Rewrite the following email in a ${tone} tone: ${text}`;
+    const prompt = `You are an expert in crafting email tones. Rewrite the following email in a ${tone} tone, ensuring it maintains clarity, professionalism, and adheres to the intended tone. Here is the email: ${text}`;
 
     const response = streamText({
       model: openai(model),
